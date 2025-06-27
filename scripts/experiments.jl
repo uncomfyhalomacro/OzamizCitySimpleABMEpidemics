@@ -18,7 +18,8 @@ using Measures
 
 gr()
 
-df_file_path = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/model_data_3.csv"
+datadir = joinpath(@__DIR__, "../data")
+df_file_path = joinpath(datadir, "model_data_3.csv")
 
 df = CSV.read(df_file_path, DataFrame)
 
@@ -37,12 +38,12 @@ function plot_infected(d::DataFrame)
               lw = 3)
 
     infected_plot = plot(d.days_passed, d.infected; params...)
-    savefig(infected_plot, "infected_plot_1.png")
+    savefig(infected_plot, joinpath(@__DIR__, "infected_plot_1.png"))
     log10_data = log10.(d.infected)
     log_infected_plot = plot(d.days_passed, log10_data; params...)
-    savefig(log_infected_plot, "infected_plot_log_1.png")
+    savefig(log_infected_plot, joinpath(@__DIR__, "infected_plot_log_1.png"))
     combine_plot_infected = plot(infected_plot, log_infected_plot, layout = (2, 1))
-    savefig(combine_plot_infected, "combine_plot_infected.png")
+    savefig(combine_plot_infected, joinpath(@__DIR__, "combine_plot_infected.png"))
     return d
 end
 
@@ -61,14 +62,14 @@ function plot_recovered(d::DataFrame)
               lw = 3)
 
     recoveries_plot = plot(d.days_passed, d.recovered; params...)
-    savefig(recoveries_plot, "recoveries_plot_1.png")
+    savefig(recoveries_plot, joinpath(@__DIR__, "recoveries_plot_1.png"))
     log10_data = log10.(d.recovered)
     log_recoveries_plot = plot(d.days_passed, log10_data; params...)
-    savefig(log_recoveries_plot, "recoveries_plot_log_1.png")
+    savefig(log_recoveries_plot, joinpath(@__DIR__, "recoveries_plot_log_1.png"))
     combine_plot_recovered = plot(recoveries_plot, log_recoveries_plot,
                                   layout = (2, 1))
     savefig(combine_plot_recovered,
-            "combine_plot_recovered.png")
+joinpath(@__DIR__,             "combine_plot_recovered.png"))
     return d
 end
 
@@ -87,10 +88,10 @@ function plot_dead(d::DataFrame)
               lw = 3)
 
     dead_plot = plot(d.days_passed, d.dead; params...)
-    savefig(dead_plot, "dead_plot_1.png")
+    savefig(dead_plot, joinpath(@__DIR__, "dead_plot_1.png"))
     log10_data = log10.(d.dead)
     dead_plot = plot(d.days_passed, log10_data; params...)
-    savefig(dead_plot, "dead_plot_log_1.png")
+    savefig(dead_plot, joinpath(@__DIR__, "dead_plot_log_1.png"))
     return d
 end
 
@@ -110,17 +111,17 @@ function plot_vaccinated(d::DataFrame)
               xrot = 45,
               lw = 3)
     vaccinated_plot = plot(d.days_passed, vaccination_list; params...)
-    savefig(vaccinated_plot, "vaccinated_plot_1.png")
+    savefig(vaccinated_plot, joinpath(@__DIR__, "vaccinated_plot_1.png"))
     log10_data = log10.(vaccination_list)
     log_vaccinated_plot = plot(d.days_passed, log10_data; params...)
-    savefig(log_vaccinated_plot, "vaccinated_plot_log_1.png")
+    savefig(log_vaccinated_plot, joinpath(@__DIR__, "vaccinated_plot_log_1.png"))
     combine_plot_vaccinated = plot(vaccinated_plot, log_vaccinated_plot, layout = (2, 1))
-    savefig(combine_plot_vaccinated, "combine_plot_vaccinated.png")
+    savefig(combine_plot_vaccinated, joinpath(@__DIR__, "combine_plot_vaccinated.png"))
     return d
 end
 
 function plot_sourced_data(d::DataFrame)
-    another_df_path = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/cumulative_sum_you_should_groupby_date_later.csv"
+    another_df_path = joinpath(datadir, "cumulative_sum_you_should_groupby_date_later.csv")
     another_df = CSV.read(another_df_path, DataFrame)
     another_df_groupby_date = groupby(another_df, [:DATES]; sort = true)
     length(another_df_groupby_date)
@@ -143,9 +144,9 @@ function plot_sourced_data(d::DataFrame)
               xrot = 45,
               lw = 3)
     infected_plot = plot(set_dates, collect_infected_cases; params...)
-    savefig(infected_plot, "infected_plot_from_source_data_1.png")
+    savefig(infected_plot, joinpath(@__DIR__, "infected_plot_from_source_data_1.png"))
     infected_plot = plot(set_dates, log_collect_infection_cases; params...)
-    savefig(infected_plot, "infected_plot_log_from_source_data_1.png")
+    savefig(infected_plot, joinpath(@__DIR__, "infected_plot_log_from_source_data_1.png"))
     params = (;
               title = "Overlay plot of sourced and simulated infected data in Ozamiz City",
               xlabel = "Dates",
@@ -161,11 +162,11 @@ function plot_sourced_data(d::DataFrame)
                          [d.infected[begin:length(collect_infected_cases)] collect_infected_cases];
                          params...)
 
-    savefig(infected_plot, "overlay_infected_plot_from_source_data_and_simulated_1.png")
+    savefig(infected_plot, joinpath(@__DIR__, "overlay_infected_plot_from_source_data_and_simulated_1.png"))
     infected_plot = plot(set_dates,
                          log10.([d.infected[begin:length(collect_infected_cases)] collect_infected_cases]);
                          params...)
-    savefig(infected_plot, "overlay_infected_log_plot_from_source_data_and_simulated_1.png")
+    savefig(infected_plot, joinpath(@__DIR__, "overlay_infected_log_plot_from_source_data_and_simulated_1.png"))
 end
 
 function plot_mean_R₀(df::DataFrame)
@@ -183,16 +184,16 @@ function plot_mean_R₀(df::DataFrame)
     brn_plot = scatter(df.days_passed, df.mean_R₀,
                        smooth = :true, linecolor = :red, linewidth = 3; params...)
     # brn_plot = Plots.abline!(bhat_brn..., label = "trendline")
-    savefig(brn_plot, "brn_plot_1.png")
+    savefig(brn_plot, joinpath(@__DIR__, "brn_plot_1.png"))
     log_brn_plot = scatter(df.days_passed, log10.(df.mean_R₀);
                            params...)
-    savefig(log_brn_plot, "log_brn_plot_1.png")
+    savefig(log_brn_plot, joinpath(@__DIR__, "log_brn_plot_1.png"))
     combine_plot_mean_R₀ = plot(brn_plot, log_brn_plot, layout = (2, 1))
-    savefig(combine_plot_mean_R₀, "combine_plot_mean_R.png")
+    savefig(combine_plot_mean_R₀, joinpath(@__DIR__, "combine_plot_mean_R.png"))
 end
 
 function plot_mean_number_of_infections_per_day(df::DataFrame)
-    another_df_path = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/cumulative_sum_you_should_groupby_date_later.csv"
+    another_df_path = joinpath(datadir, "cumulative_sum_you_should_groupby_date_later.csv")
     another_df = CSV.read(another_df_path, DataFrame)
     another_df_groupby_date = groupby(another_df, [:DATES]; sort = true)
     length(another_df_groupby_date)
@@ -214,7 +215,7 @@ function plot_mean_number_of_infections_per_day(df::DataFrame)
     uwu = bar(1:361,
               collect(a ≤ 0.0 ? 0.0 : a for a in [4, diff(collect_infected_cases)...]);
               params...)
-    savefig(uwu, "number_of_new_cases_per_day.png")
+    savefig(uwu, joinpath(@__DIR__, "number_of_new_cases_per_day.png"))
     return uwu
 end
 
@@ -239,8 +240,8 @@ function plot_everything(df::DataFrame)
                         log10.(column_list);
                         params...)
 
-    savefig(plot_val, "all_plot.png")
-    savefig(log_plot_val, "log_plot_val.png")
+    savefig(plot_val, joinpath(@__DIR__, "all_plot.png"))
+    savefig(log_plot_val, joinpath(@__DIR__, "log_plot_val.png"))
 end
 
 plot_infected(df), plot_recovered(df), plot_dead(df), plot_vaccinated(df),

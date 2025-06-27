@@ -20,16 +20,17 @@ using Measures
 
 gr()
 
-another_df_path = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/cumulative_sum_you_should_groupby_date_later.csv"
+datadir = joinpath(@__DIR__, "../data")
+another_df_path = joinpath(datadir, "cumulative_sum_you_should_groupby_date_later.csv")
 another_df = CSV.read(another_df_path, DataFrame)
 another_df_groupby_date = groupby(another_df, [:DATES]; sort = true)
 length(another_df_groupby_date)
 collect_infected_cases = [maximum(i.CUM_CASES) for i in another_df_groupby_date]
 length(collect_infected_cases)
 set_dates = Set(another_df.DATES[begin:end]) |> collect |> sort
-df_file_path_1 = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/model_data_1.csv"
-df_file_path_2 = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/model_data_2.csv"
-df_file_path_3 = "/home/uncomfy/Projects/OzamizCitySimpleABMEpidemics/data/model_data_3.csv"
+df_file_path_1 = joinpath(datadir, "model_data_1.csv")
+df_file_path_2 = joinpath(datadir, "model_data_2.csv")
+df_file_path_3 = joinpath(datadir, "model_data_3.csv")
 df1 = CSV.read(df_file_path_1, DataFrame)
 df2 = CSV.read(df_file_path_2, DataFrame)
 df3 = CSV.read(df_file_path_3, DataFrame)
@@ -54,7 +55,7 @@ plt2 = plot(df2.days_passed,
 plt3 = plot(df3.days_passed,
             log10.([df3.infected df3.partially_vaccinated df3.fully_vaccinated_without_booster df3.fully_vaccinated_with_booster]))
 combine_all = plot(plt1, plt2, plt3, layout = (3, 1); params...)
-savefig(combine_all, "combine_all_infected_vaccinatio_simulations.png")
+savefig(combine_all, joinpath(@__DIR__, "combine_all_infected_vaccinatio_simulations.png"))
 @info length(set_dates)
 plt1 = plot(set_dates, [collect_infected_cases, df1.infected[begin:length(set_dates)]])
 plt2 = plot(set_dates, [collect_infected_cases, df2.infected[begin:length(set_dates)]])
@@ -119,7 +120,7 @@ params = (;
           xrot = 45,
           lw = 3)
 combine_all = plot(plt1, plt2, plt3, layout = (3, 1); params...)
-savefig(combine_all, "overlay_combine_all_infected_simulations.png")
+savefig(combine_all, joinpath(@__DIR__, "overlay_combine_all_infected_simulations.png"))
 params = (;
           title = ["Plotted R₀ in Ozamiz City (1st run)" "2nd run" "3rd run"],
           xlabel = ["" "" "Dates"],
@@ -140,4 +141,4 @@ plt3 = scatter(df3.days_passed, df3.mean_R₀,
 
 combine_all = plot(plt1, plt2, plt3, layout = (3, 1); params...)
 
-savefig(combine_all, "overlay_combine_all_brn_simulations.png")
+savefig(combine_all, joinpath(@__DIR__,"overlay_combine_all_brn_simulations.png"))
